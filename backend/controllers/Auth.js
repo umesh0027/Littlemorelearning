@@ -55,6 +55,20 @@ exports.signup = async (req, res) => {
       })
     }
 
+    // If accountType is "Admin", check if an admin already exists
+   if (accountType === "Admin") {
+    const adminCount = await User.countDocuments({ accountType: "Admin" });
+    console.log("Admin count:", adminCount); // Debugging log
+
+    if (adminCount > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "There can only be one Admin.Please contact support if necessary.",
+      });
+    }
+  }
+
+
     // Find the most recent OTP for the email
     const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1)
     console.log(response)
@@ -75,8 +89,10 @@ exports.signup = async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    let approved = ""
-    approved === "STUDENT" ? (approved = false) : (approved = true)
+    // let approved = ""
+    // approved === "STUDENT" ? (approved = false) : (approved = true)
+
+        let approved = accountType === "Student" ? false : true;
     const user = await User.create({
       firstName,
       lastName,
