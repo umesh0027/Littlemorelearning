@@ -26,6 +26,12 @@ export function sendOtp(email, navigate) {
 
       console.log(response.data.success)
 
+        // Check if an admin already exists
+      if (response.data.message) {
+        throw new Error("An admin account already exists. If you want to create a new account , please contact the administrator")
+        
+      }
+
       if (!response.data.success) {
         throw new Error(response.data.message)
       }
@@ -34,7 +40,8 @@ export function sendOtp(email, navigate) {
       navigate("/verify-email")
     } catch (error) {
       console.log("SENDOTP API ERROR............", error)
-      toast.error(error?.response?.data?.message)
+      // toast.error(error?.response?.data?.message)
+       toast.error(error?.message || "Something went wrong");
     }
     dispatch(setLoading(false))
     toast.dismiss(toastId)
@@ -67,14 +74,25 @@ export function signUp(
 
       console.log("SIGNUP API RESPONSE............", response)
 
-      if (!response.data.success) {
+      // if (!response.data.success) {
+      //   throw new Error(response.data.message)
+      // }
+
+       if (!response.data.success) {
+        // Handle error for when there can only be one admin
+        if (response.data.message === "There can only be one Admin. Please try again.") {
+          toast.error("Only one Admin can exist. Please contact support if necessary.")
+          return
+        }
         throw new Error(response.data.message)
       }
       toast.success("Signup Successful")
       navigate("/login")
     } catch (error) {
       console.log("SIGNUP API ERROR............", error)
-      toast.error("Signup Failed")
+      // toast.error("Signup Failed")
+
+       toast.error(error.response.data.message)
       navigate("/signup")
     }
     dispatch(setLoading(false))
