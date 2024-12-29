@@ -126,7 +126,7 @@ const otpTemplate = (otp) => {
     </div>
 
     <!-- Call to Action Button -->
-    <a href="http://localhost:3000/verify-email/:id" class="cta">Verify Your Account</a>
+    <a href="https://littlemorelearning.vercel.app//verify-email/:id" class="cta">Verify Your Account</a>
 
     <!-- Support Info -->
     <div class="support">
